@@ -1,1 +1,1 @@
-FtTuring.main(["priv/unary_sub.json", "111-11="])
+FtTuring.main(["machine_descriptions/unary_sub.json", "111-11="])
