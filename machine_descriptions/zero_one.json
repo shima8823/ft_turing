@@ -1,0 +1,40 @@
+{
+  "name": "zero_one",
+  "alphabet": ["0", "1", ".", "y", "n"],
+  "blank": ".",
+  "states": ["scan_right", "check_one", "scan_left", "check_zero", "write_y", "write_n", "HALT"],
+  "initial": "scan_right",
+  "finals": ["HALT"],
+  "transitions": {
+    "scan_right": [
+      { "read": "0", "to_state": "scan_right", "write": "0", "action": "RIGHT" },
+      { "read": "1", "to_state": "scan_right", "write": "1", "action": "RIGHT" },
+      { "read": ".", "to_state": "check_one", "write": ".", "action": "LEFT" }
+    ],
+    "check_one": [
+      { "read": "0", "to_state": "write_n", "write": "0", "action": "RIGHT" },
+      { "read": "1", "to_state": "scan_left", "write": ".", "action": "LEFT" },
+      { "read": ".", "to_state": "write_y", "write": ".", "action": "RIGHT" }
+    ],
+    "scan_left": [
+      { "read": "0", "to_state": "scan_left", "write": "0", "action": "LEFT" },
+      { "read": "1", "to_state": "scan_left", "write": "1", "action": "LEFT" },
+      { "read": ".", "to_state": "check_zero", "write": ".", "action": "RIGHT" }
+    ],
+    "check_zero": [
+      { "read": "0", "to_state": "scan_right", "write": ".", "action": "RIGHT" },
+      { "read": "1", "to_state": "write_n", "write": "1", "action": "RIGHT" },
+      { "read": ".", "to_state": "write_n", "write": ".", "action": "RIGHT" }
+    ],
+    "write_y": [
+      { "read": "0", "to_state": "write_y", "write": "0", "action": "RIGHT" },
+      { "read": "1", "to_state": "write_y", "write": "1", "action": "RIGHT" },
+      { "read": ".", "to_state": "HALT", "write": "y", "action": "LEFT" }
+    ],
+    "write_n": [
+      { "read": "0", "to_state": "write_n", "write": "0", "action": "RIGHT" },
+      { "read": "1", "to_state": "write_n", "write": "1", "action": "RIGHT" },
+      { "read": ".", "to_state": "HALT", "write": "n", "action": "LEFT" }
+    ]
+  }
+}
