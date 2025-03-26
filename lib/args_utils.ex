@@ -20,6 +20,6 @@ defmodule FtTuring.ArgsUtils do
       -h, --help    show this help message and exit
     """
 
-    IO.puts(usage)
+    IO.write(usage)
   end
 end

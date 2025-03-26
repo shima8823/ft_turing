@@ -1,5 +1,6 @@
 defmodule FtTuringTest do
   use ExUnit.Case
+  import ExUnit.CaptureIO
   doctest FtTuring
 
   @empty_char "."
@@ -75,6 +76,61 @@ defmodule FtTuringTest do
         tape = FtTuring.main(["machine_descriptions/palindrome.json", pattern])
         assert get_right_most_non_empty_char(tape) == "n"
       end)
+    end
+  end
+
+  describe "file errors" do
+    test "returns error for non-existent file" do
+      assert capture_io(:stderr, fn ->
+               FtTuring.main(["non_existent_file.json", "input"])
+             end) =~ "Error: enoent"
+    end
+  end
+
+  describe "help message" do
+    test "displays help message with -h flag" do
+      assert capture_io(fn ->
+               FtTuring.main(["-h"])
+             end) == """
+             usage: ft_turing [-h] jsonfile input
+
+             positional arguments:
+               jsonfile      json description of the machine
+               input         input of the machine
+
+             optional arguments:
+               -h, --help    show this help message and exit
+             """
+    end
+
+    test "displays help message with --help flag" do
+      assert capture_io(fn ->
+               FtTuring.main(["--help"])
+             end) == """
+             usage: ft_turing [-h] jsonfile input
+
+             positional arguments:
+               jsonfile      json description of the machine
+               input         input of the machine
+
+             optional arguments:
+               -h, --help    show this help message and exit
+             """
+    end
+
+    test "displays help message with invalid args" do
+      assert capture_io(fn ->
+               FtTuring.main(["invalid_args"])
+             end) == """
+             usage: ft_turing [-h] jsonfile input
+
+             positional arguments:
+               jsonfile      json description of the machine
+               input         input of the machine
+
+             optional arguments:
+               -h, --help    show this help message and exit
+             """
     end
   end
 
