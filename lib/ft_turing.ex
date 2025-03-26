@@ -15,7 +15,8 @@ defmodule FtTuring do
   defp run(jsonfile, input) do
     IO.puts("jsonfile: #{jsonfile}, input: #{input}")
 
-    with {:ok, config} <- ConfigParser.run(jsonfile) do
+    with {:ok, json_content} <- File.read(jsonfile),
+         {:ok, config} <- ConfigParser.run(json_content) do
       Config.print(config)
 
       do_run(config, input)

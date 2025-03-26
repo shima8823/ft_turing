@@ -7,8 +7,6 @@ defmodule FtTuring.Config do
             finals: nil,
             transitions: nil
 
-  # TODO: use struct
-
   def print(config) do
     IO.puts("""
     ********************************************************************************
