@@ -19,6 +19,8 @@ defmodule FtTuring do
       Config.print(config)
 
       do_run(config, input)
+    else
+      {:error, reason} -> IO.puts(:stderr, "Error: #{reason}")
     end
   end
 
@@ -39,9 +41,10 @@ defmodule FtTuring do
     %{config: config, index: index, state: state, tape: tape} = params
 
     if state in config.finals do
+      IO.puts("[#{tape_to_string(tape, index)}]")
       tape
     else
-      current_char = Map.fetch!(tape, index)
+      %{tape: tape, char: current_char} = read_from_tape(tape, index, config)
 
       transition =
         config.transitions
@@ -64,6 +67,16 @@ defmodule FtTuring do
       }
 
       next(next_params)
+    end
+  end
+
+  defp read_from_tape(tape, index, config) do
+    if Map.has_key?(tape, index) do
+      %{tape: tape, char: Map.fetch!(tape, index)}
+    else
+      tape = Map.put(tape, index, config.blank)
+
+      %{tape: tape, char: config.blank}
     end
   end
 

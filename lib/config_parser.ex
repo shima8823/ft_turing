@@ -1,13 +1,15 @@
 defmodule FtTuring.ConfigParser do
-  @first_keys [:name, :alphabet, :blank, :states, :initial, :finals, :transitions]
+  import FtTuring.Utils, only: [validate: 2]
+
+  @keys [:name, :alphabet, :blank, :states, :initial, :finals, :transitions]
   @transition_keys [:read, :to_state, :write, :action]
   def run(jsonfile) do
     with {:ok, json} <- File.read(jsonfile),
-         {:ok, config} <- Jason.decode(json) do
-      parsed_config =
-        config
-        |> keys_to_allowed_atoms(@first_keys)
-        |> Map.update(:transitions, nil, &parse_transitions(&1))
+         {:ok, config} <- Jason.decode(json),
+         parsed_config = keys_to_allowed_atoms(config, @keys),
+         :ok <- validate(required_keys_exist?(parsed_config, @keys), :missing_key),
+         {:ok, transitions} <- parse_transitions(parsed_config.transitions) do
+      parsed_config = Map.put(parsed_config, :transitions, transitions)
 
       # TODO: validate the config
       {:ok, parsed_config}
@@ -15,11 +17,14 @@ defmodule FtTuring.ConfigParser do
   end
 
   defp parse_transitions(transitions) do
-    transitions
-    |> Enum.map(fn {key, value} ->
-      {key, Enum.map(value, &keys_to_allowed_atoms(&1, @transition_keys))}
-    end)
-    |> Map.new()
+    transitions =
+      transitions
+      |> Enum.map(fn {key, value} ->
+        {key, Enum.map(value, &keys_to_allowed_atoms(&1, @transition_keys))}
+      end)
+      |> Map.new()
+
+    {:ok, transitions}
   end
 
   @missing_value :"missing value"
@@ -37,5 +42,9 @@ defmodule FtTuring.ConfigParser do
       _ -> false
     end)
     |> Map.new()
+  end
+
+  defp required_keys_exist?(map, required_keys) do
+    Enum.all?(required_keys, &Map.has_key?(map, &1))
   end
 end
