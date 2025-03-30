@@ -17,6 +17,7 @@ defmodule FtTuring do
 
     with {:ok, json_content} <- File.read(jsonfile),
          {:ok, config} <- ConfigParser.run(json_content) do
+      # TODO: validate input
       Config.print(config)
 
       do_run(config, input)
@@ -73,6 +74,7 @@ defmodule FtTuring do
 
   defp read_from_tape(tape, index, config) do
     if Map.has_key?(tape, index) do
+      # TODO: handle when a key doesn't exist
       %{tape: tape, char: Map.fetch!(tape, index)}
     else
       tape = Map.put(tape, index, config.blank)
