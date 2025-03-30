@@ -15,7 +15,7 @@ defmodule FtTuringTest do
   describe "unary_add" do
     test "succeeds" do
       tape = FtTuring.main(["machine_descriptions/unary_add.json", "111+11="])
-      assert tape_to_string(tape) == "111111."
+      assert tape_to_string(tape) == "11111.."
     end
   end
 
